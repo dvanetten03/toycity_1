@@ -2,13 +2,13 @@ require 'json'
 path = File.join(File.dirname(__FILE__), '../data/products.json')
 file = File.read(path)
 products_hash = JSON.parse(file)
-brands_hash = Hash.new
 title_break = "-" * 30
 brand_break = "*" * 30
 
 # Print today's date
-puts ""
+puts brand_break
 puts "Today's Date: " + Time.now.strftime("%m/%d/%Y")
+puts brand_break
 
 puts "                     _            _       "
 puts "                    | |          | |      "
@@ -22,19 +22,25 @@ puts "|_|                                       "
 
 # For each product in the data set:
 products_hash["items"].each do |toy|
+
   # Print the name of the toy 
   puts brand_break
   puts toy["title"]
   puts title_break
+
   #Print the retail price of the toy
   puts "Retail Price: $" + toy["full-price"]
-# Calculate and print the total number of purchases
+
+  # Calculate and print the total number of purchases
   puts "Total Number of Purchases: " + toy["purchases"].length.to_s
+
   # Calculate and print the total amount of sales
   total_sales = 0.0
+
   toy["purchases"].each do |purchase|
     total_sales += purchase["price"].to_f
   end
+
   puts "Total Sales: $#{total_sales}"
 
   # Calculate and print the average price the toy sold for
@@ -66,32 +72,36 @@ unique_brands.each do |brand, index|
 
   # Print the name of the brand
   puts "Brand: " + brand
-
  
   # Count and print the number of the brand's toys we stock
-  btoys = products_hash["items"].select {|item| item["brand"] == brand}
+  brand_toys = products_hash["items"].select {|item| item["brand"] == brand}
 
-  btotal_stock = 0
-  bfull_price = 0
-  bpurchases = 0
-  bsales = 0
-  avg_brand_discount = 0
+  brand_total_stock = 0
+  brand_purchases = 0
+  brand_sales = 0
+  brand_revenue = 0
 
-  btoys.each {|toy| btotal_stock += toy["stock"].to_i}
-  btoys.each {|item| bpurchases += item["purchases"].length.to_i}
-    btoys.each do |item|
+  brand_toys.each {|toy| brand_total_stock += toy["stock"].to_i}
+  brand_toys.each {|item| brand_purchases += item["purchases"].length.to_i}
+    brand_toys.each do |item|
       item["purchases"].each do |i|
-        bsales += i["price"].to_f
+        brand_sales += i["price"].to_f
       end
     end
 
-  puts "Toys in stock : #{btotal_stock}"
+  puts "Toys in stock : #{brand_total_stock}"
    
   #Calculate and print the average price of the brand's toys
-
+  avg_brand_price = (brand_sales / brand_purchases).round(2)
+  puts "Average price of the brand's toys: $#{avg_brand_price}"
 
   #Calculate and print the total revenue of all the brand's toy sales combined
-  
+  brand_toys.each do |toy|
+    brand_revenue = toy["purchases"].inject(brand_revenue) {|brand_revenue, purchase| brand_revenue + purchase["price"]}
+  end
+
+  puts "#{brand} brand_revenue: $#{brand_revenue.round(2)}"
+  puts brand_break
 
 end
         
