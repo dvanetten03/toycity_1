@@ -79,7 +79,8 @@ unique_brands.each do |brand, index|
   brand_total_stock = 0
   brand_purchases = 0
   brand_sales = 0
-  brand_revenue = 0
+  
+
 
   brand_toys.each {|toy| brand_total_stock += toy["stock"].to_i}
   brand_toys.each {|item| brand_purchases += item["purchases"].length.to_i}
@@ -92,10 +93,13 @@ unique_brands.each do |brand, index|
   puts "Toys in stock : #{brand_total_stock}"
    
   #Calculate and print the average price of the brand's toys
-  avg_brand_price = (brand_sales / brand_purchases).round(2)
+  brand_total_price = 0
+  brand_toys.each {|toy| brand_total_price += toy["full-price"].to_f}
+  avg_brand_price = (brand_total_price / brand_toys.count).round(2)
   puts "Average price of the brand's toys: $#{avg_brand_price}"
 
   #Calculate and print the total revenue of all the brand's toy sales combined
+  brand_revenue = 0
   brand_toys.each do |toy|
     brand_revenue = toy["purchases"].inject(brand_revenue) {|brand_revenue, purchase| brand_revenue + purchase["price"]}
   end
